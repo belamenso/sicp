@@ -1,0 +1,6 @@
+(define (a-plus-abs-b a b)
+  ((if (> b 0) + -) a b))
+
+The given procedure chooses the operand that a and b will be applied to
+in such a way, that the value of the combination will always be a + |b|
+

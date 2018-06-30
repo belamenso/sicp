@@ -1,0 +1,17 @@
+(define (p) (p))
+
+(define (test x y) 
+  (if (= x 0) 
+      0 
+      y))
+
+(test 0 (p))
+
+When the interpreter uses applicative-order evalutaion, all the arguments
+to the procedure call are evaluated before being substituted, so that (p)
+will be evaluated while calling (test 0 (p)), this computation however, results
+in a bottom, so no value is ever produced.
+
+In an normal-order evaluator, this wouldn't be a problem because y in test would
+be computed only if there were a need for it, so (test 0 (p)) would return 0 correctly.
+
