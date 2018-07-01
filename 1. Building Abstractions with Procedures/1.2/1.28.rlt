@@ -1,0 +1,38 @@
+#lang racket
+
+(define (square x) (* x x))
+
+(define (miller-rabin n) 
+  (miller-rabin-test (- n 1) n)) 
+  
+(define (miller-rabin-test a n) 
+  (cond [(zero? a) #t]
+        [(= (expmod a (- n 1) n) 1) (miller-rabin-test (- a 1) n)] 
+        [else #f]))
+  
+(define (expmod base exp m) 
+  (cond [(= exp 0) 1]
+        [(even? exp)
+         (let ((x (expmod base (/ exp 2) m)))
+           (let ([rem (remainder (square x) m)])
+             (if (non-trivial-sqrt? x m rem) 0 rem)))]
+        [else
+         (remainder (* base (expmod base (- exp 1) m))
+                    m)]))
+
+(define (non-trivial-sqrt? n m rem)
+  (cond [(= n 1) #f]
+        [(= n (- m 1)) #f]
+        [else (= rem 1)]))
+
+(miller-rabin 2)
+(miller-rabin 7)
+(miller-rabin 13)
+(miller-rabin 37)
+  
+(miller-rabin 15)
+(miller-rabin 39)
+
+(define Carmichael-numbers '(561 1105 1729 2465 2821 6601))
+(map (λ (x) `(,(miller-rabin x) . ,x))
+     Carmichael-numbers)

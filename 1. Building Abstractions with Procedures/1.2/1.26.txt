@@ -1,0 +1,3 @@
+This is tree recursion. Time requirements grow exponentially with
+the height of the tree which is log_n, so time needed is linear.
+
