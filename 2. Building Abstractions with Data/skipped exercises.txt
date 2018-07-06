@@ -2,4 +2,6 @@
 2.24 (inkscape)
 2.42 (queens)
 2.43 (queens)
+2.64 (binary trees)
+2.65 (binary trees)
 
