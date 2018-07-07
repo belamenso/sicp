@@ -6,3 +6,7 @@
 2.65 (binary trees)
 2.74 (badly formulated exercise) 
 
+skipped the end of the chapter
+    2.81-2.97
+    later
+
