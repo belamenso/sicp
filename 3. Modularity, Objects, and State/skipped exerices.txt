@@ -1,0 +1,8 @@
+3.9 (inkscape)
+3.10 (inkscape)
+3.11 (inkscape)
+3.20 (drawing enviroments)
+3.23 (finish bidirectional list)
+3.26 (implementing tables as binary trees)
+3.32 (?)
+
