@@ -182,28 +182,20 @@
 (define (connect connector new-constraint)
   ((connector 'connect) new-constraint))
 
-;; application
-(define (celsius-fahrenheit-converter c f)
-  (let ((u (make-connector))
-        (v (make-connector))
-        (w (make-connector))
-        (x (make-connector))
-        (y (make-connector)))
-    (multiplier c w u)
-    (multiplier v x u)
-    (adder v y f)
-    (constant 9 w)
-    (constant 5 x)
-    (constant 32 y)
-    'ok))
+;;;;;;
 
-(define C (make-connector))
-(define F (make-connector))
-(celsius-fahrenheit-converter C F)
+(define (squarer a b) (multiplier a a b))
 
-(probe "Celsius temp" C)
-(probe "Fahrenheit temp" F)
-(set-value! C 25 'user)
-;(set-value! F 212 'user)
-(forget-value! C 'user)
-;(set-value! F 212 'user)
+(define A (make-connector))
+(define B (make-connector))
+(probe "A" A)
+(probe "B" B)
+(squarer A B)
+(set-value! B 169 'user)
+(has-value? A)
+
+#|
+Because of the way multiplier's process-new-value is implemented,
+in above situation, root will not be computed, because only one of
+three terminals is set.
+|#
