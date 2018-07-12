@@ -1,0 +1,11 @@
+The problem stems from Paul and Peter exchanging the same accounts
+with differenct ordering. So that the sequence of blocking them
+is different. If we enforce that for any two given arguments,
+the sequence of them being blocked is the same, then the first block
+from the second executed procedure cannot proceed because the account
+is already blocked, which is correct bahavior.
+
+I won't implement it because that's trivial.
+(You have to impose strict linear order, in which no two accounts
+have the same number, otherwise the ordering will not be corrected).
+

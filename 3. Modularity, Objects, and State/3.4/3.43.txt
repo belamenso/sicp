@@ -1,0 +1,61 @@
+(1) Sequential execution with proper locks
+If 0 exchanges happened, then obviously the resulting balances are
+    a permutation of the set of all balances.
+If n previous exchanges resulted in a permutation of an initial sequence
+    of balances and we exchange balances of two chosen accounts: A and B,
+    then the resulting sequence is also a permuation of previous one.
+So after finite number of exchanges, the sequence of balances is
+    a permutation of the initial sequence.
+
+(2) This can be violated using the first presented version
+
+(define (exchange account1 account2)
+  (let ((difference (- (account1 'balance)
+                       (account2 'balance))))
+    ((account1 'withdraw) difference)
+    ((account2 'deposit) difference)))
+
+let A,B,C = 10,20,30 be accounts.
+
+(parallel-execute (λ () (exchange A B)) ; (1)
+                  (λ () (exchange A C))) ; (2)
+
+Result of sequential execution:
+    (1) difference = -10
+    (2) difference = -20
+    (2) A -= -20 => A = 30
+    (2) C += -20 => C = 10
+    (1) A -= -10 => A = 40
+    (1) B += -10 => B = 10
+
+So A,B,C = 40,10,10, which isn't a permutation of 10,20,30
+
+(3) Argue that even with the broken version, the total amount of
+    money in the system stays the same.
+
+Say you have an amount x money in the system. Each procedure first computes the difference d,
+d <= x, then removes d money from the system: x' := x - d, at the end it adds d money to the
+system: x'' = x' + d = x - d + d = x. So after finite number of procesures like this have
+executed, the amount of money in the system is constant.
+
+(4) Even this is not the case if individial deposits and withdrawals are not protected.
+Let A,B,C = 10,20,30 be accounts. We're exchanging A,B (ex1) and A,C (ex2) simultaneously.
+Each exchange: 1 computes difference
+               2 removes the difference from the first account
+               3 adds the difference to the second account
+Withdrawal (removal): 1 compute new value by subtracting value from current value
+                      2 set new value
+
+The executed sequence is as follows:
+    ex1           diff = -10
+    ex2           diff = -20
+    ex1 1 1       new A value = 20
+    ex2 1 1       new A value = 30
+    ex1 1 2       set A to 20
+    ex2 1 2       set A to 30
+    ex1 2         set B to 10
+    ex2 2         set C to 10
+
+Now A,B,C = 30,10,10
+A+B+C = 50 /= 60 = 10+20+30
+

@@ -1,0 +1,23 @@
+Assume that we have provedure that does the following:
+    1 block given resource
+    2 reads the next resource to block from that resource
+    3 block that read resource
+    4 releases both blocks
+
+Suppose we have resources A and B and two procedures called on them.
+Ordering leading to deadlock:
+    procA 1     block A
+    procA 2     next := B
+    procB 1     block B
+    procB 2     next := A
+deadlock:
+    procA 3     has to wait, B blocked
+    procB 3     has to wait, A blocked
+    procA 3     has to wait, B blocked
+    procB 3     has to wait, A blocked
+    procA 3     has to wait, B blocked
+    procB 3     has to wait, A blocked
+    ...
+
+A will not be available until B is and B won't be until A is.
+

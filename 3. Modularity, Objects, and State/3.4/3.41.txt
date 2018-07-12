@@ -1,0 +1,6 @@
+Reading/writing contents of a variable should be an atomic operation,
+so no, this doesn't change anything.
+If we cannot assure that, then yes, this could prevent, e.g.
+reading mixed bits of previous value of balance and new value just
+being set.
+

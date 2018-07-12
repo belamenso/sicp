@@ -1,0 +1,32 @@
+(define (make-mutex)
+  (let ((cell (list false)))
+    (define (the-mutex m)
+      (cond ((eq? m 'acquire)
+             (if (test-and-set! cell)
+                 (the-mutex 'acquire))) ; retry
+            ((eq? m 'release) (clear! cell))))
+    the-mutex))
+(define (clear! cell) (set-car! cell false))
+
+(define (test-and-set! cell)
+  (if (car cell)
+      true
+      (begin (set-car! cell true)
+             false)))
+
+(define m (make-mutex))
+(define (f)
+    (m 'acquire)
+    (proceed-f))
+(define (g)
+    (m 'acquire)
+    (proceed-g))
+
+Faulty execution ordering could look like that:
+
+f>acquire>test-and-set!>testing (car cell)   =>   determined as false
+g>acquire>test-and-set!>testing (car cell)   =>   determined as false
+f>acquire>test-and-set!>testing (car cell)   =>   set (car cell) to true
+g>acquire>test-and-set!>testing (car cell)   =>   set (car cell) to true
+proceed-f and proceed-g	executed at the same time
+

@@ -1,0 +1,5 @@
+serialized-exchange activates both accounts' serializers.
+The first thing serialized-exchange does is to call first account's
+balance, but this cannot proceed with activated serialized.
+We've got a deadlock.
+

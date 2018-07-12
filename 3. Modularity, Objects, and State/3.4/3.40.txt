@@ -1,0 +1,41 @@
+(define x 10)
+(parallel-execute
+    (λ () (set! x (* x x)))
+    (λ () (set! x (* x x x))))
+
+(1) (λ () (set! x (* x x)))
+    1.1 read x1
+    1.2 read x2
+    1.3 compute (* x1 x2)
+    1.4 set x to (* x1 x2)
+(2) (λ () (set! x (* x x x))))
+    2.1 read x1
+    2.2 read x2
+    2.3 read x3
+    2.4 compute (* x1 x2 x3)
+    2.5 set x to (* x1 x2 x3) 
+
+So if we were to evaluate these seteps sequentially it would take
+9 steps. Since steps in each procedure are ordered, we'd have 
+Binomial(9, 4) = 126 distinct orderings.
+
+Possible results will be in {10^i | i ∈ {2,3,4,5,6}}
+All will be powers of 10 because they will be results of multiplying 10
+by itself a few times.
+
+Both procedures need to execute fully (eigther 1.4 or 2.5 will be the last step),
+the result will at least be 100 = 10 * 10 (first procedure read two 10s, then
+overriden the result of the second procedure).
+
+The biggest result will be caused by both procedures executing sequentially
+(because both are increasing, the biggest possible inputs to proc1 are (1000, 1000),
+the biggest possible inputs to proc2 are (100, 100, 100)).
+
+(define x 10)
+(parallel-execute
+    (s (λ () (set! x (* x x))))
+    (s (λ () (set! x (* x x x)))))
+
+This leaves only two possible orderings. Possible results are:
+(10^2)^3 or (10^3)^2, both give us 10^5.
+

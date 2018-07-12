@@ -1,0 +1,21 @@
+(define x 10)
+(define s (make-serializer))
+(parallel-execute 
+ (lambda () (set! x ((s (lambda () (* x x))))))
+ (s (lambda () (set! x (+ x 1)))))
+
+(B) The second lambda safely performs x = x + 1
+(A) The first lambda has 2 possible "things" to do:
+    (A1) safetly compute x * x
+    (A2) set x to that computed value
+
+So the possible orderings are (since A2 must always follow A1):
+(1) A1 A2 B
+(2) A1 B A2
+(3) B A1 A2
+
+Results of these operations are:
+(1) x = 101
+(2) x = 100
+(3) x = 121
+
