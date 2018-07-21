@@ -1,0 +1,82 @@
+#lang racket
+
+(define (average a b) (/ (+ a b) 2.0))
+
+(define (sqrt-stream x)
+  (stream-cons 1.0
+               (stream-map (λ (guess)
+                             (average guess (/ x guess)))
+                           (sqrt-stream x))))
+
+(define (display-stream n s)
+  (define (times f n x)
+    (match n
+      [0 x]
+      [n (f (times f (sub1 n) x))]))
+  (for ([i (in-range 0 n)])
+    (displayln (stream-first (times stream-rest i s)))))
+
+(display-stream 10 (sqrt-stream 2))
+
+(define (sqrt x)
+  (let iter ([guess 1.0] [i 1])
+    (when (i . <= . 10)
+      (displayln guess)
+      (iter (average guess (/ x guess)) (add1 i)))))
+(newline)
+(sqrt 2)
+
+(define (scale-stream s factor) (stream-map (λ (x) (* x factor)) s))
+
+(define (partial-sums s)
+  (define partial
+    (stream-cons (stream-first s)
+                 (add-streams partial
+                              (stream-rest s))))
+  partial)
+
+(define (add-streams s1 s2)
+  (if (stream-empty? s1)
+      s1
+      (stream-cons (+ (stream-first s1)
+                      (stream-first s2))
+                   (add-streams (stream-rest s1)
+                                (stream-rest s2)))))
+
+(define (pi-summands n)
+  (stream-cons 
+   (/ 1.0 n)
+   (stream-map - (pi-summands (+ n 2)))))
+
+(define pi-stream
+  (scale-stream 
+   (partial-sums (pi-summands 1)) 4))
+
+(newline)
+(display-stream 10 pi-stream)
+
+;;
+(define (square x) (* x x))
+
+(define (euler-transform s)
+  (let ((s0 (stream-ref s 0))     ; S[n-1]
+        (s1 (stream-ref s 1))     ; S[n]
+        (s2 (stream-ref s 2)))    ; S[n+1]
+    (stream-cons 
+     (- s2 (/ (square (- s2 s1))
+              (+ s0 (* -2 s1) s2)))
+     (euler-transform (stream-rest s)))))
+
+(newline)
+(display-stream 10 (euler-transform pi-stream))
+
+;;
+(define (make-tableau transform s)
+  (stream-cons s
+               (make-tableau transform (transform s))))
+
+(define (accelerated-sequence transform s)
+  (stream-map stream-first (make-tableau transform s)))
+
+(newline)
+(display-stream 10 (accelerated-sequence euler-transform pi-stream))
