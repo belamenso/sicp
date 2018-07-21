@@ -1,6 +1,8 @@
 #lang racket
 
 ;; streams
+;; streams
+;#|
 (define-syntax delay
   (syntax-rules ()
     [(delay x)
@@ -15,6 +17,12 @@
                (printf "Computed ~a\n" result)
                (set! computed #t)
                result))))]))
+;|#
+#|
+(define-syntax delay
+  (syntax-rules ()
+    [(delay x) (λ () x)]))
+|#
 (define (force x) (x))
 
 (define-syntax cons-stream
@@ -43,15 +51,50 @@
       (stream-car s)
       (stream-ref (stream-cdr s) (sub1 n))))
 
+(define (display-stream s)
+  (stream-for-each displayln s))
+
+(define (stream-filter pred stream)
+  (cond ((null? stream) 
+         '())
+        ((pred (stream-car stream))
+         (cons-stream 
+          (stream-car stream)
+          (stream-filter 
+           pred
+           (stream-cdr stream))))
+        (else (stream-filter 
+               pred 
+               (stream-cdr stream)))))
+
+(define (stream-for-each proc s)
+  (if (null? s)
+      'done
+      (begin (proc (stream-car s))
+             (stream-for-each proc
+                              (stream-cdr s)))))
+
 ;;;
+(define sum 0)
 
-(define x 
-  (stream-map
-   (λ (x)
-     ;(displayln x)
-     (* 10 x))
-   (stream-range 0 10)))
+(define (accum x)
+  (set! sum (+ x sum))
+  sum)
 
-(stream-ref x 5)
+(define seq
+  (stream-map 
+   accum 
+   (stream-range 1 20)))
+
+(define y (stream-filter even? seq))
+
+(define z 
+  (stream-filter 
+   (lambda (x) 
+     (= (remainder x 5) 0)) seq))
+
+(stream-ref y 7)
 (newline)
-(stream-ref x 7)
+(display-stream z)
+(newline)
+sum

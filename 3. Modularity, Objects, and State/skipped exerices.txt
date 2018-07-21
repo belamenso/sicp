@@ -6,4 +6,6 @@
 3.26 (implementing tables as binary trees)
 3.32 (?)
 3.36 (drawing environments)
+3.52 (?)
+3.57 (?)
 
