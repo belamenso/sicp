@@ -8,4 +8,8 @@
 3.36 (drawing environments)
 3.52 (understanding evaluation of laziness)
 3.57 (understanding evaluation of laziness)
+3.77 (integrals)
+3.78 (integrals)
+3.79 (integrals)
+3.80 (integrals)
 
